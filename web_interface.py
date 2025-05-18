@@ -7,31 +7,26 @@ from datetime import datetime
 API_BASE_URL = "http://localhost:8000/api"
 
 def main():
-    st.title("📊 Real Estate Data Explorer")
+    st.title("Real Estate Data Explorer")
     st.write("Интерфейс для просмотра данных о недвижимости")
 
-    # Получаем список файлов
     try:
         response = requests.get(f"{API_BASE_URL}/files")
         if response.status_code == 200:
             files = response.json()
             
-            # Создаем боковую панель с фильтрами
             st.sidebar.title("Фильтры")
             
-            # Выбор файла
             selected_file = st.sidebar.selectbox(
                 "Выберите файл",
                 [f["filename"] for f in files],
                 index=0
             )
 
-            # Фильтры цены
             st.sidebar.subheader("Фильтр по цене")
             min_price = st.sidebar.number_input("Минимальная цена", value=0)
             max_price = st.sidebar.number_input("Максимальная цена", value=1000000)
 
-            # Сортировка
             st.sidebar.subheader("Сортировка")
             sort_by = st.sidebar.selectbox(
                 "Сортировать по",
@@ -44,12 +39,10 @@ def main():
                 index=0
             )
 
-            # Пагинация
             st.sidebar.subheader("Пагинация")
             limit = st.sidebar.slider("Количество записей", 1, 100, 10)
             offset = st.sidebar.number_input("Смещение", 0, 1000, 0)
 
-            # Получаем данные с учетом фильтров
             params = {
                 "filename": selected_file,
                 "limit": limit,
@@ -64,8 +57,7 @@ def main():
             if response.status_code == 200:
                 data = response.json()
                 
-                # Отображаем статистику
-                st.subheader("📈 Статистика")
+                st.subheader("Статистика")
                 stats_response = requests.get(f"{API_BASE_URL}/stats", params={"filename": selected_file})
                 if stats_response.status_code == 200:
                     stats = stats_response.json()
@@ -79,13 +71,11 @@ def main():
                     with col4:
                         st.metric("Средняя цена", f"{stats['price_stats']['mean']:,.0f} ₽")
                 
-                # Отображаем данные
-                st.subheader("📋 Данные")
+                st.subheader("Данные")
                 if data["data"]:
                     df = pd.DataFrame(data["data"])
                     st.dataframe(df)
                     
-                    # Добавляем информацию о пагинации
                     st.write(f"Показано {len(df)} из {data['total']} записей")
                 else:
                     st.warning("Нет данных, соответствующих выбранным фильтрам")
