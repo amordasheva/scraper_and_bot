@@ -3,7 +3,6 @@ import requests
 import pandas as pd
 from datetime import datetime
 
-# Настройки API
 API_BASE_URL = "http://localhost:8000/api"
 
 def main():
