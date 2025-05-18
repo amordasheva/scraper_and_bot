@@ -7,7 +7,6 @@ from datetime import datetime
 
 app = FastAPI(title="Real Estate Data API")
 
-# Настройка CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,11 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Путь к файлам с данными
 DATA_DIR = "data"
 
 def get_latest_data_file():
-    """Получает путь к последнему файлу с данными"""
     files = [f for f in os.listdir(DATA_DIR) if f.startswith("real_estate_kommunarka_") and not f.endswith("_raw_")]
     if not files:
         raise HTTPException(status_code=404, detail="No data files found")
@@ -28,12 +25,10 @@ def get_latest_data_file():
 
 @app.get("/")
 async def root():
-    """Корневой эндпоинт"""
     return {"message": "Real Estate Data API"}
 
 @app.get("/files")
 async def list_files():
-    """Получение списка доступных файлов с данными"""
     files = []
     for filename in os.listdir(DATA_DIR):
         if filename.startswith("real_estate_kommunarka_") and not filename.endswith("_raw_"):
@@ -56,20 +51,8 @@ async def get_data(
     sort_by: Optional[str] = None,
     sort_order: Optional[str] = "asc"
 ):
-    """
-    Получение данных с возможностью фильтрации и сортировки
-    
-    Параметры:
-    - filename: имя файла (если не указано, используется последний)
-    - limit: количество записей (1-100)
-    - offset: смещение
-    - min_price: минимальная цена
-    - max_price: максимальная цена
-    - sort_by: поле для сортировки
-    - sort_order: порядок сортировки (asc/desc)
-    """
+
     try:
-        # Определяем файл для чтения
         if filename:
             file_path = os.path.join(DATA_DIR, filename)
             if not os.path.exists(file_path):
@@ -77,22 +60,18 @@ async def get_data(
         else:
             file_path = get_latest_data_file()
 
-        # Читаем данные
         df = pd.read_csv(file_path)
 
-        # Применяем фильтры
         if min_price is not None:
             df = df[df['price'] >= min_price]
         if max_price is not None:
             df = df[df['price'] <= max_price]
 
-        # Применяем сортировку
         if sort_by:
             if sort_by not in df.columns:
                 raise HTTPException(status_code=400, detail=f"Invalid sort column: {sort_by}")
             df = df.sort_values(by=sort_by, ascending=(sort_order == "asc"))
 
-        # Применяем пагинацию
         total = len(df)
         df = df.iloc[offset:offset + limit]
 
@@ -108,9 +87,7 @@ async def get_data(
 
 @app.get("/stats")
 async def get_stats(filename: Optional[str] = None):
-    """Получение статистики по данным"""
     try:
-        # Определяем файл для чтения
         if filename:
             file_path = os.path.join(DATA_DIR, filename)
             if not os.path.exists(file_path):
@@ -118,10 +95,8 @@ async def get_stats(filename: Optional[str] = None):
         else:
             file_path = get_latest_data_file()
 
-        # Читаем данные
         df = pd.read_csv(file_path)
 
-        # Рассчитываем статистику
         stats = {
             "total_records": len(df),
             "price_stats": {
