@@ -65,7 +65,6 @@ def analyze_historical_data():
             макс_цена=('price', 'max')
         ).reset_index()
 
-        # Форматируем и записываем таблицу
         for _, row in daily_stats.iterrows():
             f.write(f"\nДата: {row['date']}\n")
             f.write(f"  Количество объявлений: {row['количество']}\n")
