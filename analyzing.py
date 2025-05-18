@@ -14,7 +14,7 @@ def analyze_latest_data():
     print("Загружаем последние данные...")
     df = pd.read_csv('data/real_estate_kommunarka_latest.csv')
 
-    print(f"\nАнализ данных от {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"Анализ данных от {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"Всего объявлений: {len(df)}")
     print(f"Минимальная цена: {df['price'].min():,} ₽/мес")
     print(f"Максимальная цена: {df['price'].max():,} ₽/мес")
