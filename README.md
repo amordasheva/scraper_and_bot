@@ -50,12 +50,3 @@ streamlit run web_interface.py
 ```bash
 python analyzing.py
 ```
-
-## Данные
-
-Данные сохраняются в `data/`:
-- `real_estate_kommunarka_raw_*.csv` - сырые данные
-- `real_estate_kommunarka_*.csv` - обработанные данные
-- `real_estate_kommunarka_history.csv` - история
-- `real_estate_kommunarka_latest.csv` - последние данные
-
