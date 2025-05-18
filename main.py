@@ -74,7 +74,7 @@ def scrape_data():
                         break
 
             if not items:
-                logger.warning("Не удалось найти объявления на странице, пропускаем")
+                logger.warning("Не удалось найти объявления на странице")
                 continue
 
             for idx, item in enumerate(items):
